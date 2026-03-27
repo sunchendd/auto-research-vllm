@@ -1,0 +1,40 @@
+[
+  {
+    "identifier": "qwen3-8b-direct-tp2",
+    "case": "direct",
+    "model": "/data/models/Qwen3-8B",
+    "description": "dual-5090 direct baseline",
+    "gpus": "0,1",
+    "tensor_parallel_size": 2,
+    "num_prompts": 2,
+    "max_tokens": 32,
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.85
+  },
+  {
+    "identifier": "qwen3-8b-suffix-tp2",
+    "case": "suffix",
+    "model": "/data/models/Qwen3-8B",
+    "description": "SuffixDecoding-inspired dual-5090 baseline",
+    "gpus": "0,1",
+    "tensor_parallel_size": 2,
+    "num_prompts": 2,
+    "max_tokens": 32,
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.85
+  },
+  {
+    "identifier": "qwen3-8b-eagle3-tp2",
+    "case": "eagle3",
+    "model": "/data/models/Qwen3-8B",
+    "description": "EAGLE-3 dual-5090 baseline",
+    "gpus": "0,1",
+    "tensor_parallel_size": 2,
+    "num_prompts": 2,
+    "max_tokens": 32,
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.85,
+    "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
+    "num_speculative_tokens": 3
+  }
+]

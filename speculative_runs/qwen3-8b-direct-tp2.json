@@ -1,0 +1,12 @@
+{
+  "identifier": "qwen3-8b-direct-tp2",
+  "case": "direct",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": null,
+  "num_prompts": 2,
+  "max_tokens": 32,
+  "elapsed_time": 0.2996488600037992,
+  "generated_tokens": 64,
+  "tokens_per_second": 213.58332549367466,
+  "speculative_config": null
+}

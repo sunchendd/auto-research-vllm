@@ -1,12 +1,14 @@
 {
+  "identifier": "qwen3-8b-suffix-tp2",
   "case": "suffix",
-  "backend": "vllm",
   "model": "/data/models/Qwen3-8B",
   "draft_model": null,
-  "num_prompts": 2,
-  "max_tokens": 32,
-  "elapsed_time": 0.11988987898803316,
-  "generated_tokens": 64,
-  "tokens_per_second": 533.8232096004382,
-  "notes": "tensor_parallel_size=2"
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.6590677069907542,
+  "generated_tokens": 1024,
+  "tokens_per_second": 617.214111084923,
+  "speculative_config": {
+    "method": "suffix"
+  }
 }

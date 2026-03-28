@@ -1,12 +1,12 @@
 {
-  "identifier": "qwen3-8b-direct-tp2",
-  "case": "direct",
+  "identifier": "qwen3-8b-chunked-prefill-tp2",
+  "case": "chunked_prefill",
   "model": "/data/models/Qwen3-8B",
   "draft_model": null,
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.4378055179840885,
+  "elapsed_time": 1.4383144390012603,
   "generated_tokens": 1024,
-  "tokens_per_second": 712.1964599466311,
+  "tokens_per_second": 711.9444623743381,
   "speculative_config": null
 }

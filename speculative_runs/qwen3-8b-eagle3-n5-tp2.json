@@ -1,0 +1,16 @@
+{
+  "identifier": "qwen3-8b-eagle3-n5-tp2",
+  "case": "eagle3",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.597941757994704,
+  "generated_tokens": 1024,
+  "tokens_per_second": 640.8243572563262,
+  "speculative_config": {
+    "method": "eagle3",
+    "model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
+    "num_speculative_tokens": 5
+  }
+}

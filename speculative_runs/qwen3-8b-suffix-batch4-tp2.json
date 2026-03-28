@@ -1,0 +1,14 @@
+{
+  "identifier": "qwen3-8b-suffix-batch4-tp2",
+  "case": "suffix",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": null,
+  "num_prompts": 4,
+  "max_tokens": 128,
+  "elapsed_time": 1.6411221410089638,
+  "generated_tokens": 512,
+  "tokens_per_second": 311.98165401950024,
+  "speculative_config": {
+    "method": "suffix"
+  }
+}

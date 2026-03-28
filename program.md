@@ -207,27 +207,37 @@ For any YES → append to `patent_tracker.md` immediately.
 
 ---
 
-## Baseline Knowledge (L20, TP=2)
+## Baseline Knowledge (L20, TP=2, num_prompts=8, max_tokens=128)
 
-Current measured TPS on this machine:
+Current measured TPS on this machine (2026-03-27):
 
 | Model | Case | TPS | Score | Config |
 |-------|------|-----|-------|--------|
-| Qwen3-8B | direct | 213.58 | 1.00 | TP=2, GPU 0+2, num_prompts=2, max_tokens=32 |
-| Qwen3-8B | suffix | 533.82 | 2.50 | TP=2, GPU 0+2 |
-| Qwen3-8B | eagle3 (AngelSlim) | 175.18 | 0.82 | TP=2, GPU 0+2, draft=AngelSlim |
+| Qwen3-8B | direct | 712 | 1.00 | TP=2, GPU 0+2 |
+| Qwen3-8B | eagle3 (AngelSlim) | 745 | **1.05** | TP=2, GPU 0+2, draft=AngelSlim, n_spec=3 |
+| Qwen3-8B | suffix | 614 | 0.86 | TP=2, GPU 0+2 — WORSE at higher batch |
+| Qwen3-8B | eagle3 (speculator) | 568 | 0.80 | TP=2, GPU 0+2, draft=Qwen3-8B-speculator |
+| Qwen3-8B | prefix_cache | 712 | 1.00 | TP=2, GPU 0+2 |
+| Qwen3-8B | chunked_prefill | 712 | 1.00 | TP=2, GPU 0+2 |
+| Qwen3-32B | direct | 95.4 | 1.00 | TP=2, GPU 0+2, gpu_mem=0.90 |
+| Qwen3-32B | eagle3 (RedHatAI) | **124.3** | **1.30** | TP=2, GPU 0+2, draft=RedHatAI, n_spec=3 |
+| Qwen3-32B | suffix | 91.6 | 0.96 | TP=2, GPU 0+2 — WORSE |
 
 **Key observations:**
-- suffix delivers 2.5x on L20 — currently the strongest method
-- eagle3 underperforms direct — possible optimization target (draft model quality? token budget?)
-- All measurements use num_prompts=2, max_tokens=32 — consider larger batch for throughput research
+- eagle3 AngelSlim is now the 8B winner (1.05x at batch=8, vs 0.82x at batch=2 previously)
+- eagle3 RedHatAI is the 32B winner with strong 1.30x improvement
+- suffix decoding REVERSES at higher batch sizes — 2.5x at batch=2, only 0.86x at batch=8
+- prefix_cache and chunked_prefill are neutral (1.0x) — overhead cancels benefit at this workload
+- Qwen3-32B requires TP=2 (GPU1 occupied; TP=3 invalid since 64 heads not divisible by 3)
+- Note: vLLM 0.18.0 requires arctic-inference==0.1.1 for suffix decoding
 
 **Next experiments to try (priority order):**
-1. eagle3 with `Qwen3-8B-speculator.eagle3` (different draft model) — may outperform AngelSlim
-2. suffix + prefix caching combined (enable_prefix_caching=True with suffix)
-3. chunked_prefill baseline — enable chunked prefill, measure throughput on longer prompts
-4. Qwen3-32B direct + suffix + eagle3 (RedHatAI draft) — 32B baseline on TP=3/4
-5. Increase num_prompts to 16-32 for more realistic throughput measurement
+1. eagle3 with higher num_speculative_tokens (5, 7) — may improve eagle3 at batch=8
+2. eagle3 AngelSlim + prefix_caching combined — stack two gains
+3. Tune batch size for suffix: find crossover point (between 2 and 8 prompts where suffix loses)
+4. FP8 quantization — Qwen3-8B with FP8 KV cache to reduce memory pressure
+5. eagle3 32B with more spec tokens (5, 7) — 1.30x already, could go higher
+6. max_num_seqs tuning — increase from default for throughput maximization
 
 ---
 

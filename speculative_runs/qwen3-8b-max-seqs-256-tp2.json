@@ -1,12 +1,12 @@
 {
-  "identifier": "qwen3-8b-direct-tp2",
+  "identifier": "qwen3-8b-max-seqs-256-tp2",
   "case": "direct",
   "model": "/data/models/Qwen3-8B",
   "draft_model": null,
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.4378055179840885,
+  "elapsed_time": 1.437768353964202,
   "generated_tokens": 1024,
-  "tokens_per_second": 712.1964599466311,
+  "tokens_per_second": 712.2148690897503,
   "speculative_config": null
 }

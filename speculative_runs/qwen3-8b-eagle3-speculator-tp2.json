@@ -1,0 +1,16 @@
+{
+  "identifier": "qwen3-8b-eagle3-speculator-tp2",
+  "case": "eagle3",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": "/data/models/Qwen3-8B-speculator.eagle3",
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.8039068139914889,
+  "generated_tokens": 1024,
+  "tokens_per_second": 567.6568168918903,
+  "speculative_config": {
+    "method": "eagle3",
+    "model": "/data/models/Qwen3-8B-speculator.eagle3",
+    "num_speculative_tokens": 3
+  }
+}

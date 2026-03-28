@@ -95,6 +95,11 @@ def build_engine_args(
 
 def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
     speculative_config = build_speculative_config(args)
+    # Snapshot before passing to EngineArgs — vLLM mutates the dict in-place
+    # during create_speculative_config() by adding ModelConfig objects.
+    speculative_config_snapshot = (
+        {k: v for k, v in speculative_config.items()} if speculative_config else None
+    )
     engine_args = build_engine_args(args, speculative_config)
     llm = LLM(**engine_args.__dict__)
 
@@ -130,7 +135,7 @@ def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
         "elapsed_time": elapsed,
         "generated_tokens": generated_tokens,
         "tokens_per_second": tokens_per_second,
-        "speculative_config": speculative_config,
+        "speculative_config": speculative_config_snapshot,
     }
 
 

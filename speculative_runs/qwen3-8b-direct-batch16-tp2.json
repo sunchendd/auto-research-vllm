@@ -1,0 +1,12 @@
+{
+  "identifier": "qwen3-8b-direct-batch16-tp2",
+  "case": "direct",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": null,
+  "num_prompts": 16,
+  "max_tokens": 128,
+  "elapsed_time": 1.5048410159652121,
+  "generated_tokens": 2048,
+  "tokens_per_second": 1360.9411082448487,
+  "speculative_config": null
+}

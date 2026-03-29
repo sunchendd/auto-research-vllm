@@ -5,9 +5,9 @@
   "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.3762239799834788,
+  "elapsed_time": 1.3775240709655918,
   "generated_tokens": 1024,
-  "tokens_per_second": 744.06493048631,
+  "tokens_per_second": 743.3626907747717,
   "speculative_config": {
     "method": "eagle3",
     "model": "/data/models/AngelSlim-Qwen3-8B_eagle3",

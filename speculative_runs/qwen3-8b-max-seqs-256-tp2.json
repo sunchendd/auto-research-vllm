@@ -5,8 +5,8 @@
   "draft_model": null,
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.437768353964202,
+  "elapsed_time": 1.4393628900288604,
   "generated_tokens": 1024,
-  "tokens_per_second": 712.2148690897503,
+  "tokens_per_second": 711.4258725813529,
   "speculative_config": null
 }

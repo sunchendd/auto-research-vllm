@@ -5,9 +5,9 @@
   "draft_model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
   "num_prompts": 4,
   "max_tokens": 128,
-  "elapsed_time": 4.117986558994744,
+  "elapsed_time": 4.119967790029477,
   "generated_tokens": 512,
-  "tokens_per_second": 124.33260591432968,
+  "tokens_per_second": 124.27281621935612,
   "speculative_config": {
     "method": "eagle3",
     "model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",

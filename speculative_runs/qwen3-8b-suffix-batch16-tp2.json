@@ -5,9 +5,9 @@
   "draft_model": null,
   "num_prompts": 16,
   "max_tokens": 128,
-  "elapsed_time": 1.7828943499480374,
+  "elapsed_time": 1.794733693008311,
   "generated_tokens": 2048,
-  "tokens_per_second": 1148.69397620767,
+  "tokens_per_second": 1141.1163717371167,
   "speculative_config": {
     "method": "suffix"
   }

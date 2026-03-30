@@ -1,0 +1,16 @@
+{
+  "identifier": "qwen3-8b-ngram-n3-tp2",
+  "case": "ngram",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": null,
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.597326710994821,
+  "generated_tokens": 1024,
+  "tokens_per_second": 641.071105210686,
+  "speculative_config": {
+    "method": "ngram",
+    "num_speculative_tokens": 3,
+    "prompt_lookup_max": 5
+  }
+}

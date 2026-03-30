@@ -1,12 +1,12 @@
 {
-  "identifier": "qwen3-8b-direct-tp2",
+  "identifier": "qwen3-8b-flashinfer-direct-tp2",
   "case": "direct",
   "model": "/data/models/Qwen3-8B",
   "draft_model": null,
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.4390146529767662,
+  "elapsed_time": 1.4139536520233378,
   "generated_tokens": 1024,
-  "tokens_per_second": 711.5980354207923,
+  "tokens_per_second": 724.2104424955356,
   "speculative_config": null
 }

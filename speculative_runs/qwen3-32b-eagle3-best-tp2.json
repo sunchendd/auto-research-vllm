@@ -1,13 +1,13 @@
 {
-  "identifier": "qwen3-32b-eagle3-prefix-cache-tp2",
+  "identifier": "qwen3-32b-eagle3-best-tp2",
   "case": "eagle3",
   "model": "/data/models/Qwen3-32B",
   "draft_model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
   "num_prompts": 4,
   "max_tokens": 128,
-  "elapsed_time": 4.118706576991826,
+  "elapsed_time": 4.1215174500248395,
   "generated_tokens": 512,
-  "tokens_per_second": 124.31087051944077,
+  "tokens_per_second": 124.22609056208516,
   "speculative_config": {
     "method": "eagle3",
     "model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",

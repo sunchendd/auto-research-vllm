@@ -3,7 +3,7 @@
     "identifier": "qwen3-8b-direct-tp2",
     "case": "direct",
     "model": "/data/models/Qwen3-8B",
-    "description": "L20 direct baseline, TP=2",
+    "description": "Baseline: Qwen3-8B direct, TP=2, batch=8",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 8,
@@ -12,10 +12,10 @@
     "gpu_memory_utilization": 0.85
   },
   {
-    "identifier": "qwen3-8b-eagle3-angelslim-n3-tp2",
+    "identifier": "qwen3-8b-eagle3-best-tp2",
     "case": "eagle3",
     "model": "/data/models/Qwen3-8B",
-    "description": "EAGLE3 AngelSlim n=3 — validated best 8B method (1.05x)",
+    "description": "Reference 8B: Eagle3 AngelSlim n=3, 1.05x",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 8,
@@ -26,10 +26,10 @@
     "num_speculative_tokens": 3
   },
   {
-    "identifier": "qwen3-8b-eagle3-prefix-cache-tp2",
+    "identifier": "qwen3-8b-adaptive-flashinfer-tp2",
     "case": "eagle3",
     "model": "/data/models/Qwen3-8B",
-    "description": "EAGLE3 AngelSlim n=3 + prefix caching — stack two gains",
+    "description": "[FlashInfer+Adaptive] CURRENT BEST 8B: 821 TPS, 1.15x — FlashInfer shifts optimal n to 1",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 8,
@@ -37,78 +37,42 @@
     "max_model_len": 4096,
     "gpu_memory_utilization": 0.85,
     "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
-    "num_speculative_tokens": 3,
-    "enable_prefix_caching": true
+    "patch_module": "implementations/adaptive_flashinfer.py"
   },
   {
-    "identifier": "qwen3-8b-direct-batch16-tp2",
-    "case": "direct",
+    "identifier": "qwen3-8b-lookahead-tp2",
+    "case": "lookahead",
     "model": "/data/models/Qwen3-8B",
-    "description": "Direct at batch=16 — throughput scalability; also provides direct baseline for suffix@batch=16",
-    "gpus": "0,2",
-    "tensor_parallel_size": 2,
-    "num_prompts": 16,
-    "max_tokens": 128,
-    "max_model_len": 4096,
-    "gpu_memory_utilization": 0.85
-  },
-  {
-    "identifier": "qwen3-8b-suffix-batch16-tp2",
-    "case": "suffix",
-    "model": "/data/models/Qwen3-8B",
-    "description": "Suffix at batch=16 — crossover study (suffix degrades above batch=2)",
-    "gpus": "0,2",
-    "tensor_parallel_size": 2,
-    "num_prompts": 16,
-    "max_tokens": 128,
-    "max_model_len": 4096,
-    "gpu_memory_utilization": 0.85
-  },
-  {
-    "identifier": "qwen3-8b-max-seqs-256-tp2",
-    "case": "direct",
-    "model": "/data/models/Qwen3-8B",
-    "description": "Direct with max_num_seqs=256 — higher concurrency for throughput",
+    "description": "[Lookahead/ICML2024] Jacobi-based parallel gen — no draft model, expect 1.5-2.5x if supported",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 8,
     "max_tokens": 128,
     "max_model_len": 4096,
     "gpu_memory_utilization": 0.85,
-    "max_num_seqs": 256
+    "num_speculative_tokens": 3,
+    "speculative_config": {"method": "lookahead", "num_speculative_tokens": 3},
+    "patch_module": "implementations/lookahead_decoding.py"
   },
   {
-    "identifier": "qwen3-8b-eagle3-max-seqs-256-tp2",
-    "case": "eagle3",
+    "identifier": "qwen3-8b-ngram-gpu-n3-tp2",
+    "case": "ngram",
     "model": "/data/models/Qwen3-8B",
-    "description": "Eagle3 AngelSlim n=3 + max_num_seqs=256 — seqs tuning with spec decoding",
+    "description": "[ngram_gpu] GPU-accelerated n-gram — compare vs CPU ngram (0.88x) and baseline",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 8,
     "max_tokens": 128,
     "max_model_len": 4096,
     "gpu_memory_utilization": 0.85,
-    "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
     "num_speculative_tokens": 3,
-    "max_num_seqs": 256
-  },
-  {
-    "identifier": "qwen3-8b-dflash-direct-tp2",
-    "case": "direct",
-    "model": "/data/models/Qwen3-8B-DFlash-b16",
-    "description": "DFlash-b16 model variant direct baseline — different attention block size",
-    "gpus": "0,2",
-    "tensor_parallel_size": 2,
-    "num_prompts": 8,
-    "max_tokens": 128,
-    "max_model_len": 4096,
-    "gpu_memory_utilization": 0.85
+    "speculative_config": {"method": "ngram_gpu", "num_speculative_tokens": 3, "prompt_lookup_max": 5}
   },
   {
     "identifier": "qwen3-32b-direct-tp2",
     "case": "direct",
     "model": "/data/models/Qwen3-32B",
-    "description": "Qwen3-32B direct baseline TP=2",
+    "description": "Baseline: Qwen3-32B direct, TP=2, batch=4",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 4,
@@ -117,10 +81,10 @@
     "gpu_memory_utilization": 0.90
   },
   {
-    "identifier": "qwen3-32b-eagle3-n3-tp2",
+    "identifier": "qwen3-32b-eagle3-n2-tp2",
     "case": "eagle3",
     "model": "/data/models/Qwen3-32B",
-    "description": "EAGLE3 RedHatAI n=3 on 32B — validated 1.30x",
+    "description": "CURRENT BEST 32B: Eagle3 n=2, 1.37x — n=2 confirmed optimal",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 4,
@@ -128,13 +92,13 @@
     "max_model_len": 4096,
     "gpu_memory_utilization": 0.90,
     "draft_model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
-    "num_speculative_tokens": 3
+    "num_speculative_tokens": 2
   },
   {
-    "identifier": "qwen3-32b-eagle3-prefix-cache-tp2",
+    "identifier": "qwen3-32b-adaptive-flashinfer-tp2",
     "case": "eagle3",
     "model": "/data/models/Qwen3-32B",
-    "description": "EAGLE3 RedHatAI n=3 + prefix caching on 32B — stack gains",
+    "description": "[FlashInfer+Adaptive 32B] Does FlashInfer shift optimal n for 32B? Expect neutral or slight loss (compute-bound)",
     "gpus": "0,2",
     "tensor_parallel_size": 2,
     "num_prompts": 4,
@@ -142,7 +106,20 @@
     "max_model_len": 4096,
     "gpu_memory_utilization": 0.90,
     "draft_model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
+    "patch_module": "implementations/adaptive_flashinfer_32b.py"
+  },
+  {
+    "identifier": "qwen3-32b-lookahead-tp2",
+    "case": "lookahead",
+    "model": "/data/models/Qwen3-32B",
+    "description": "[Lookahead/ICML2024] Jacobi parallel gen on 32B — no draft model needed",
+    "gpus": "0,2",
+    "tensor_parallel_size": 2,
+    "num_prompts": 4,
+    "max_tokens": 128,
+    "max_model_len": 4096,
+    "gpu_memory_utilization": 0.90,
     "num_speculative_tokens": 3,
-    "enable_prefix_caching": true
+    "speculative_config": {"method": "lookahead", "num_speculative_tokens": 3}
   }
 ]

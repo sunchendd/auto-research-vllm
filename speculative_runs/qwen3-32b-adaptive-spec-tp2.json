@@ -1,0 +1,24 @@
+{
+  "identifier": "qwen3-32b-adaptive-spec-tp2",
+  "case": "eagle3",
+  "model": "/data/models/Qwen3-32B",
+  "draft_model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
+  "num_prompts": 4,
+  "max_tokens": 128,
+  "elapsed_time": 3.920448834018316,
+  "generated_tokens": 512,
+  "tokens_per_second": 130.5972917073423,
+  "speculative_config": {
+    "method": "eagle3",
+    "model": "/data/models/RedHatAI-Qwen3-32B-speculator.eagle3",
+    "num_speculative_tokens": 2
+  },
+  "adaptive_profile": {
+    "1": 109.0039485894159,
+    "2": 112.54624257032442,
+    "3": 107.484772800458,
+    "5": 0.0,
+    "7": 104.86176133180487
+  },
+  "selected_n": 2
+}

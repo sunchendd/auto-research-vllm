@@ -1,0 +1,24 @@
+{
+  "identifier": "qwen3-8b-adaptive-flashinfer-tp2",
+  "case": "eagle3",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.2467975650215521,
+  "generated_tokens": 1024,
+  "tokens_per_second": 821.304138480812,
+  "speculative_config": {
+    "method": "eagle3",
+    "model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
+    "num_speculative_tokens": 1
+  },
+  "adaptive_profile": {
+    "1": 427.488461004541,
+    "2": 394.22372475299915,
+    "3": 404.33179776355746,
+    "5": 355.2503106611996,
+    "7": 323.91827801086316
+  },
+  "selected_n": 1
+}

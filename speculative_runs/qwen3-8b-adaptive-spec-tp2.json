@@ -1,16 +1,24 @@
 {
-  "identifier": "qwen3-8b-eagle3-max-seqs-256-tp2",
+  "identifier": "qwen3-8b-adaptive-spec-tp2",
   "case": "eagle3",
   "model": "/data/models/Qwen3-8B",
   "draft_model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
   "num_prompts": 8,
   "max_tokens": 128,
-  "elapsed_time": 1.3748090870212764,
+  "elapsed_time": 1.3742059969808906,
   "generated_tokens": 1024,
-  "tokens_per_second": 744.830689342216,
+  "tokens_per_second": 745.1575689887195,
   "speculative_config": {
     "method": "eagle3",
     "model": "/data/models/AngelSlim-Qwen3-8B_eagle3",
     "num_speculative_tokens": 3
-  }
+  },
+  "adaptive_profile": {
+    "1": 380.7817688087931,
+    "2": 396.28817587283214,
+    "3": 404.4666439696226,
+    "5": 353.71312675776613,
+    "7": 322.37337890569063
+  },
+  "selected_n": 3
 }

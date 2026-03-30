@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import time
 from pathlib import Path
@@ -66,6 +67,7 @@ def build_speculative_config(args: argparse.Namespace) -> dict[str, Any] | None:
 def build_engine_args(
     args: argparse.Namespace,
     speculative_config: dict[str, Any] | None,
+    extra_kwargs: dict[str, Any] | None = None,
 ) -> EngineArgs:
     kwargs: dict[str, Any] = dict(
         model=args.model,
@@ -90,17 +92,51 @@ def build_engine_args(
     if args.max_num_seqs is not None:
         kwargs["max_num_seqs"] = args.max_num_seqs
 
+    if args.kv_cache_dtype:
+        kwargs["kv_cache_dtype"] = args.kv_cache_dtype
+
+    # extra kwargs from patch_module override last
+    if extra_kwargs:
+        kwargs.update(extra_kwargs)
+
     return EngineArgs(**kwargs)
 
 
+def load_patch_module(patch_module_path: str) -> Any | None:
+    """Load an algorithm implementation from implementations/<name>.py."""
+    path = Path(patch_module_path)
+    spec = importlib.util.spec_from_file_location("algorithm_patch", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def run_benchmark(args: argparse.Namespace) -> dict[str, Any]:
+    # Load patch module if specified
+    patch_mod = None
+    if args.patch_module:
+        patch_mod = load_patch_module(args.patch_module)
+        # apply_patch(): optional hook to monkey-patch vLLM before engine creation
+        if hasattr(patch_mod, "apply_patch"):
+            patch_mod.apply_patch()
+        # run_benchmark(): optional full override — return non-None to skip default
+        if hasattr(patch_mod, "run_benchmark"):
+            result = patch_mod.run_benchmark(args)
+            if result is not None:
+                return result
+
+    # extra_engine_kwargs(): optional additional engine kwargs from the patch
+    extra_kwargs: dict[str, Any] = {}
+    if patch_mod and hasattr(patch_mod, "extra_engine_kwargs"):
+        extra_kwargs.update(patch_mod.extra_engine_kwargs())
+
     speculative_config = build_speculative_config(args)
     # Snapshot before passing to EngineArgs — vLLM mutates the dict in-place
     # during create_speculative_config() by adding ModelConfig objects.
     speculative_config_snapshot = (
         {k: v for k, v in speculative_config.items()} if speculative_config else None
     )
-    engine_args = build_engine_args(args, speculative_config)
+    engine_args = build_engine_args(args, speculative_config, extra_kwargs)
     llm = LLM(**engine_args.__dict__)
 
     warmup_params = SamplingParams(
@@ -164,6 +200,10 @@ def parse_args() -> argparse.Namespace:
                         help="Max batched tokens per iteration (used with chunked prefill).")
     parser.add_argument("--max-num-seqs", type=int, default=None,
                         help="Max number of sequences in a batch.")
+    parser.add_argument("--kv-cache-dtype", default=None,
+                        help="KV cache dtype: auto, fp8, fp8_e5m2, fp8_e4m3fn (default: auto).")
+    parser.add_argument("--patch-module", default=None,
+                        help="Path to implementations/<algo>.py — loaded before engine creation.")
     return parser.parse_args()
 
 

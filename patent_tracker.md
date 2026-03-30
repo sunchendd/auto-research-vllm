@@ -107,12 +107,98 @@ depth to saturate memory bandwidth.
 
 ---
 
+### [2026-03-30] Attention backend determines optimal num_speculative_tokens — adaptive profiler critical
+
+**Observation**: The optimal num_speculative_tokens is NOT fixed — it depends on the attention
+backend, not just the model size. FlashInfer shifts the optimal n for 8B Eagle3 from 3 → 1:
+  - FlashAttention default + Eagle3 n=3: 744 TPS (1.05x)
+  - FlashInfer + Eagle3 **fixed** n=3: 607 TPS (0.85x) — WORSE than baseline
+  - FlashInfer + Eagle3 **adaptive** (selected n=1): 821 TPS (1.15x) — NEW BEST
+
+The adaptive profiler was the only way to discover this. Without it, FlashInfer would have been
+incorrectly discarded as incompatible with speculative decoding.
+
+**Why novel**: The interaction between attention kernel implementation and speculative decoding
+performance is unstudied. FlashInfer makes verification faster relative to drafting, shifting
+the optimal speculation depth. This creates a 3-way dependency: (target model, draft model,
+attention backend) all jointly determine the optimal strategy.
+
+**Potential claim**: A serving system that co-optimizes attention backend selection and
+speculative token count via joint profiling, rather than treating them as independent
+hyperparameters.
+
+**Evidence** (3 consecutive cycles, all consistent):
+  - adaptive_flashinfer 8B: 821 TPS ± 0.1 (1.15x) — confirmed stable
+  - flashinfer + fixed n=3 8B: 607–629 TPS (0.85–0.88x) — confirmed failure
+
+**Priority**: Very High — directly enables patent claim
+**Status**: Validated (3 cycles)
+
+---
+
+### [2026-03-30] Adaptive speculative token count outperforms fixed n on 32B
+
+**Observation**: Adaptive profiler selected n=2 for Qwen3-32B (vs conventional n=3), achieving
+130.70 TPS (1.37x) vs fixed n=3 at 124.23 TPS (1.30x). The profiling batch showed:
+n=2 (112.5) > n=5 (110.4) > n=1 (108.9) > n=3 (107.6) > n=7 (104.8) TPS.
+For 8B the ordering was: n=3 > n=2 > n=1 > n=5 > n=7.
+
+**Why novel**: The optimal num_speculative_tokens is model-size-dependent and cannot be
+determined from model architecture alone. Larger models have slower target-model forward
+passes, shifting the optimal towards fewer speculative tokens (lower rejection cost relative
+to verification cost). No existing paper characterizes the optimal n as a function of
+target/draft model size ratio.
+
+**Potential claim**: A workload-adaptive speculative decoding system that profiles n values
+at engine startup to select the Pareto-optimal num_speculative_tokens for the specific
+(target model, draft model, hardware, batch size) tuple. Patent covers the profiling
+algorithm and the model-size-to-optimal-n relationship.
+
+**Evidence**: 32B n=2 adaptive: 130.70 TPS (1.37x) vs 32B n=3 fixed: 124.23 TPS (1.30x).
+8B: n=3 optimal as before. Implemented in implementations/adaptive_spec_profiler.py.
+
+**Priority**: High
+**Status**: Validated
+
+---
+
+### [2026-03-30] FP8 KV cache + Eagle3 incompatibility is model-size-dependent
+
+**Observation**: FP8 KV cache (fp8_e5m2) combined with Eagle3 speculative decoding gives
+0.80x on Qwen3-8B but +1.31x on Qwen3-32B (marginally better than Eagle3 alone 1.30x).
+The 8B result suggests a vLLM-level incompatibility or significant precision degradation
+when FP8 KV is combined with Eagle3 token verification on smaller models.
+
+**Why novel**: The interaction between KV cache quantization and speculative decoding
+verification is unstudied. For 8B models, Eagle3 verification may be more sensitive to KV
+precision (draft model has less "headroom" for quantization error). For 32B, the model is
+robust enough that FP8 KV noise doesn't disrupt verification. This creates a model-size
+threshold below which KV quantization + speculation cannot be safely combined.
+
+**Potential claim**: A serving system that selects KV cache quantization level based on the
+target model size and active speculation method, disabling quantization when the expected
+precision loss would degrade speculative token acceptance rate below a threshold.
+
+**Evidence**: 8B FP8+Eagle3: 577 TPS (0.80x) vs 8B Eagle3 alone: 744 TPS (1.05x).
+32B FP8+Eagle3: 125.49 TPS (1.31x) vs 32B Eagle3 alone: 124.23 TPS (1.30x).
+
+**Priority**: High
+**Status**: Idea — needs root cause analysis
+
+---
+
 ## Validated Patents (TBD)
 
-*None yet — populate as experiments validate ideas.*
+*None yet — promote from Ideas once independently confirmed.*
 
 ---
 
 ## Discarded Ideas
 
-*Record why an idea was discarded to avoid re-investigating it.*
+### [2026-03-30] N-gram speculation on instruction-following prompts
+
+N-gram speculation (REST/PLD) gives 0.88–0.89x on our benchmark (independent technical
+questions). Root cause: zero prompt-to-prompt text overlap, so n-gram lookup never finds
+matches. N-gram is not a general inference optimization — it requires workloads with high
+textual repetition (code completion, RAG with shared context, document continuation).
+Not worth pursuing for general-purpose serving benchmarks.

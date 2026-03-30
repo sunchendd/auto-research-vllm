@@ -41,6 +41,9 @@ class ExperimentSpec:
     enable_chunked_prefill: bool = False
     max_num_batched_tokens: int | None = None
     max_num_seqs: int | None = None
+    # Algorithm implementation hooks
+    kv_cache_dtype: str | None = None
+    patch_module: str | None = None
 
 
 @dataclass
@@ -141,6 +144,10 @@ def build_benchmark_command(
         command.extend(["--max-num-batched-tokens", str(spec.max_num_batched_tokens)])
     if spec.max_num_seqs is not None:
         command.extend(["--max-num-seqs", str(spec.max_num_seqs)])
+    if spec.kv_cache_dtype:
+        command.extend(["--kv-cache-dtype", spec.kv_cache_dtype])
+    if spec.patch_module:
+        command.extend(["--patch-module", spec.patch_module])
     return command
 
 

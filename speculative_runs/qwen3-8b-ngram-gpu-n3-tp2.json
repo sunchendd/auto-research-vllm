@@ -1,0 +1,16 @@
+{
+  "identifier": "qwen3-8b-ngram-gpu-n3-tp2",
+  "case": "ngram",
+  "model": "/data/models/Qwen3-8B",
+  "draft_model": null,
+  "num_prompts": 8,
+  "max_tokens": 128,
+  "elapsed_time": 1.5987299229600467,
+  "generated_tokens": 1024,
+  "tokens_per_second": 640.5084344102756,
+  "speculative_config": {
+    "method": "ngram_gpu",
+    "num_speculative_tokens": 3,
+    "prompt_lookup_max": 5
+  }
+}
